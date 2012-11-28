@@ -3,7 +3,9 @@
 
 import csv as csv
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 
+#I need to convert row cabin to a single letter (and/or a binary > or < 50?)
 
 
 csv_file_object = csv.reader(open('../csv/train.csv', 'rb')) #Load in the csv file

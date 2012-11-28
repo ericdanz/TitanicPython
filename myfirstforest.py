@@ -1,9 +1,3 @@
-""" Writing my first randomforest code.
-Author : AstroDave
-Date : 23rd September, 2012
-please see packages.python.org/milk/randomforests.html for more
-
-""" 
 
 import numpy as np
 import csv as csv
@@ -15,6 +9,11 @@ train_data=[] #Creat a variable called 'train_data'
 for row in csv_file_object: #Skip through each row in the csv file
     train_data.append(row) #adding each row to the data variable
 train_data = np.array(train_data) #Then convert from a list to an array
+
+#I need to convert row cabin to a single letter (and/or a binary > or < 50?)
+
+
+
 
 #I need to convert all strings to integer classifiers:
 #Male = 1, female = 0:
@@ -36,7 +35,7 @@ train_data[train_data[0::,4] == '',4] = np.median(train_data[train_data[0::,4]\
 train_data[train_data[0::,10] == '',10] = np.round(np.mean(train_data[train_data[0::,10]\
                                                    != '',10].astype(np.float)))
 
-train_data = np.delete(train_data,[2,7,9],1) #remove the name data, cabin and ticket
+train_data = np.delete(train_data,[2,7],1) #remove the name data and ticket
 #I need to do the same with the test data now so that the columns are in the same
 #as the training data
 
@@ -69,7 +68,7 @@ for i in xrange(np.size(test_data[0::,0])):
                                              (test_data[0::,0] == test_data[i,0])\
             ,7].astype(np.float))
 
-test_data = np.delete(test_data,[1,6,8],1) #remove the name data, cabin and ticket
+test_data = np.delete(test_data,[1,6],1) #remove the name data, cabin and ticket
 
 #The data is now ready to go. So lets train then test!
 
