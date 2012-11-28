@@ -15,7 +15,13 @@ for row in csv_file_object: #Skip through each row in the csv file
     data.append(row) #adding each row to the data variable
 data = np.array(data) #Then convert from a list to an array
 
-#in order to analyse the price collumn I need to bin up that data
+#split the cabin column to find the last split (the last if there are multiple cabins)
+
+
+
+
+
+#in order to analyse the price column I need to bin up that data
 #here are my binning parameters the problem we face is some of the fares are very large
 #So we can either have a lot of bins with nothing in them or we can just absorb some
 #information and just say anythng over 30 is just in the last bin so we add a ceiling
@@ -55,8 +61,9 @@ survival_table[ survival_table != survival_table ] = 0.
 
 #Now I have my proportion of survivors, simply round them such that if <0.5
 #they dont surivive and >1 they do
-survival_table[ survival_table < 0.5 ] = 0
-survival_table[ survival_table >= 0.5 ] = 1
+#DONT DO THIS, so it can be averaged
+#survival_table[ survival_table < 0.5 ] = 0
+#survival_table[ survival_table >= 0.5 ] = 1
 
 
 #Now I have my indicator I can read in the test file and write out
