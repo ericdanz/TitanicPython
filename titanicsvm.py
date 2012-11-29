@@ -1,12 +1,11 @@
-#I'm going to want the forest, a fitter (logistic regression? elastic net?), and whatever this is averaged
-
+#Import whatever
 import csv as csv
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import LinearSVC
 
 
-#put the training data into a big variable
-
+#import training data
 csv_file_object = csv.reader(open('train.csv', 'rb')) #Load in the csv file
 header = csv_file_object.next() #Skip the fist line as it is a header
 data=[] #Creat a variable called 'data'
@@ -14,10 +13,18 @@ for row in csv_file_object: #Skip through each row in the csv file
     data.append(row) #adding each row to the data variable
 data = np.array(data) #Then convert from a list to an array
 
-#split the cabin column to find the last split (the last if there are multiple cabins)
-#split the cabin column to find the last split (the last if there are multiple cabins)
+#scale all data values, remove ticket and name, fix cabin to be just the letter
 
-for i in data.shape[0]:
-	
 
-data[column9] = 
+#do a grid search for c,y on the data, possibly a second better-region-only search
+
+
+#run an RBF kernel on the data
+
+
+
+
+
+
+
+
