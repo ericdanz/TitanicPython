@@ -9,7 +9,7 @@ import numpy as np
 
 
 
-csv_file_object = csv.reader(open('../csv/train.csv', 'rb')) #Load in the csv file
+csv_file_object = csv.reader(open('train.csv', 'rb')) #Load in the csv file
 header = csv_file_object.next() #Skip the fist line as it is a header
 data=[] #Creat a variable called 'data'
 for row in csv_file_object: #Skip through each row in the csv file
@@ -52,19 +52,26 @@ for i in xrange(number_of_classes):
 #Since in python if it tries to find the mean of an array with nothing in it
 #such that the denominator is 0, then it returns nan, we can convert these to 0
 #by just saying where does the array not equal the array, and set these to 0.
-survival_table[ survival_table != survival_table ] = 0.
+survival_table[ survival_table != survival_table ] = 0.00
 
 #Now I have my proportion of survivors, simply round them such that if <0.5
 #they dont surivive and >1 they do
 survival_table[ survival_table < 0.5 ] = 0
 survival_table[ survival_table >= 0.5 ] = 1
 
+#print survival_table
+#print survival_table[1,1,1]
+#for i in range(2):
+#	for x in range(3):
+#		for y in range(4):
+#			survival_table[i,x,y] = round(survival_table[i,x,y],2)
+
 
 #Now I have my indicator I can read in the test file and write out
 #if a women then survived(1) if a man then did not survived (0)
 #1st Read in test
-test_file_obect = csv.reader(open('../csv/test.csv', 'rb'))
-open_file_object = csv.writer(open("../csv/genderclasspricebasedmodelpy.csv", "wb"))
+test_file_obect = csv.reader(open('test.csv', 'rb'))
+open_file_object = csv.writer(open("genderclasspricebasedmodelpy.csv", "wb"))
 
 header = test_file_obect.next()
 
@@ -95,11 +102,11 @@ for row in test_file_obect:
         #Now I have the bin fare, the class and whether female or male we can
         #just cross ref their details with our 'survivial table
     if row[2] == 'female':
-        row.insert(0,int(survival_table[0,float(row[0])-1,bin_fare])) #Insert the prediciton
+        row.insert(0,float(survival_table[0,float(row[0])-1,bin_fare])) #Insert the prediciton
                                                         #at the start of the row
         open_file_object.writerow(row) #Write the row to the file
     else:
-        row.insert(0,int(survival_table[1,float(row[0])-1,bin_fare])) #Insert the prediciton
+        row.insert(0,float(survival_table[1,float(row[0])-1,bin_fare])) #Insert the prediciton
                                                         #at the start of the row
         open_file_object.writerow(row)
 
