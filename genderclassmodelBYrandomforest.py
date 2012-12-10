@@ -5,11 +5,18 @@ from collections import Counter
 
 
 
-csv_file_objectg = csv.reader(open('genderclasspricebasedmodelpy.csv', 'rb')) #Load in the csv file
-csv_file_objectf = csv.reader(open('myfirstforest.csv', 'rb')) #Load in the csv file
+csv_file_objectg = csv.reader(open('genderclassmodel2.csv', 'rb')) #Load in the csv file
+csv_file_objectf = csv.reader(open('myfirstforest2.csv', 'rb')) #Load in the csv file
+csv_file_objectn = csv.reader(open('normalizedforest.csv', 'rb')) #Load in the csv file
+
+
+
+
 
 gdata = []
 fdata = []
+ndata = []
+avgdata = []
 
 for row in csv_file_objectg:
 	gdata.append(row)
@@ -17,11 +24,16 @@ for row in csv_file_objectg:
 	
 for row in csv_file_objectf:
 	fdata.append(row)
+
+for row in csv_file_objectn:
+	ndata.append(row)
+	
 	
 gdata = np.array(gdata)
 fdata = np.array(fdata)
+ndata = np.array(ndata)
 avgsurvived = []
-tempavg = ['1','2']
+tempavg = ['1','2','3']
 
 print xrange(np.size(fdata[0::,0]))
 print xrange(np.size(gdata[0::,0]))
@@ -30,7 +42,30 @@ print xrange(np.size(gdata[0::,0]))
 for i in xrange(np.size(gdata[0::,0])):
 	tempavg[0] = gdata[i,0].astype(float)
 	tempavg[1] = fdata[i,0].astype(float)
+	tempavg[2] = ndata[i,0].astype(float)
 	print tempavg
 	print np.round(np.mean(tempavg))
+	avgdata.append(np.round(np.mean(tempavg)))
 	
+open_file_object = csv.writer(open("avgforest.csv", "wb"))
+test_file_object = csv.reader(open('test.csv', 'rb'))
+
+test_file_object.next()
+
+i = 0
+for row in test_file_object:
+	row.insert(0,avgdata[i].astype(np.uint8))
+	open_file_object.writerow(row)
+	print row
+	print i
+	i += 1
+
+
+
+
+
+
+
+
+
 

@@ -102,12 +102,11 @@ def fixdataSVM (data):
 				print data[i,y]
 				print '--'
 				#data[i,y] = num(0)
-	
+	deparray = data[0::,0]
 	df = DataFrame(data.astype(np.float))
 	df_norm = (df-df.mean())/(df.max()-df.min())
-	print df_norm[5]
-	
-	
+	data = np.array(df_norm)
+	data[0::,0] = deparray
 	return data
 
 #import training data
@@ -118,9 +117,34 @@ for row in csv_file_object: #Skip through each row in the csv file
     train_data.append(row) #adding each row to the data variable
 train_data = np.array(train_data) #Then convert from a list to an array
 
+test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the test csv file
+header = test_file_object.next() #Skip the fist line as it is a header
+test_data=[] #Creat a variable called 'test_data'
+for row in test_file_object: #Skip through each row in the csv file
+    test_data.append(row) #adding each row to the data variable
+test_data = np.array(test_data) #Then convert from a list to an array
+test_data = np.insert(test_data,[0], 0, axis=1)
+
 #normalize data frame, remove ticket and name, fix cabin to be just the letter
 train_data = fixdataSVM(train_data)
-print train_data[4]
+test_data = fixdataSVM(test_data)
+#print train_data[2]
+#print test_data[2]
+
+
+#do a quick forest
+forest = RandomForestClassifier(n_estimators=100)
+forest = forest.fit(train_data[0::,1::],train_data[0::,0])
+forest_output = forest.predict(test_data[0::,1::])
+
+open_file_object = csv.writer(open("normalizedforest.csv", "wb"))
+test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
+test_file_object.next()
+i = 0
+for row in test_file_object:
+    row.insert(0,forest_output[i].astype(np.uint8))
+    open_file_object.writerow(row)
+    i += 1
 
 
 #do a grid search for c,y on the data, possibly a second better-region-only search
