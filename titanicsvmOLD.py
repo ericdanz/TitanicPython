@@ -70,7 +70,7 @@ def fixdataSVM (data):
 		if x[1] == '3' and x[8]:
 			thirdclassfare.append(np.float(x[8]))
 
-	ageaverage = int(np.median(age))
+	ageaverage = int(np.mean(age))
 	
 	firstclassfareaverage = int(np.mean(firstclassfare))
 	secondclassfareaverage = int(np.mean(secondclassfare))
@@ -94,11 +94,11 @@ def fixdataSVM (data):
 				data[i,8] = thirdclassfareaverage
 				
 	#clean up the name and ticket elements
-	data = np.delete(data,[2,7,9],1)
+	data = np.delete(data,[2,7],1)
 		
 	#change strings to float
 	for i in xrange(np.size(data[0::,0])):
-		for y in range(8):
+		for y in range(9):
 			try:
 				data[i,y] = num(data[i,y])
 			except ValueError:
@@ -167,10 +167,10 @@ for row in test_file_object:
 #do a grid search for c,y on the data, possibly a second better-region-only search
 #do a bigger fold, maybe 10 instead of 3
 C_range = 2.0 ** np.arange(-13,30)
-gamma_range = 2.0 ** np.arange(-17,14)
+gamma_range = 2.0 ** np.arange(-17,13)
 param_grid = dict(gamma=gamma_range, C=C_range)
 cv = StratifiedKFold(train_data[0::,0], 10)
-grid = GridSearchCV(SVC(kernel='rbf',cache_size=2000), param_grid = param_grid, cv = cv, n_jobs=20, verbose=2)
+grid = GridSearchCV(SVC(kernel='rbf',cache_size=2000), param_grid = param_grid, cv = cv, n_jobs=5, verbose=2)
 grid.fit(train_data[0::,1::],train_data[0::,0])
 thebest = ["The best classifier is: ", grid.best_estimator_]
 
