@@ -8,7 +8,7 @@ from collections import Counter
 csv_file_objectg = csv.reader(open('genderclassmodel2.csv', 'rb')) #Load in the csv file
 csv_file_objectf = csv.reader(open('myfirstforest2.csv', 'rb')) #Load in the csv file
 csv_file_objectr = csv.reader(open('rbf.csv', 'rb')) #Load in the csv file
-csv_file_objectn = csv.reader(open('normalizedforestNEW.csv', 'rb')) #Load in the csv file
+csv_file_objectn = csv.reader(open('normalizedforest.csv', 'rb')) #Load in the csv file
 csv_file_objectgb = csv.reader(open('gbc.csv', 'rb')) #Load in the csv file
 
 

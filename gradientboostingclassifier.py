@@ -143,9 +143,9 @@ test_data = np.insert(test_data,[0], 0, axis=1)
 #in the future, scale the data by the train set and apply that to test set
 train_data = fixdataSVM(train_data)
 test_data = fixdataSVM(test_data)
-train_test = scaleData(train_data, test_data)
-train_data = train_test[0]
-test_data = train_test[1]
+#train_test = scaleData(train_data, test_data)
+#train_data = train_test[0]
+#test_data = train_test[1]
 #print train_data[2]
 #print test_data[2]
 
@@ -166,7 +166,7 @@ test_data = train_test[1]
 
 
 #GBC
-gb = GradientBoostingClassifier(learn_rate = 0.2, n_estimators = 150)
+gb = GradientBoostingClassifier(learn_rate = 0.01, n_estimators = 500)
 gb.fit(train_data[0::,1::],train_data[0::,0])
 gbcResults = gb.predict(test_data[0::,1::])
 
