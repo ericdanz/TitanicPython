@@ -166,7 +166,8 @@ test_data = train_test[1]
 
 
 #GBC
-gb = GradientBoostingClassifier().fit(train_data[0::,1::],train_data[0::,0])
+gb = GradientBoostingClassifier(learn_rate = 0.2, n_estimators = 150)
+gb.fit(train_data[0::,1::],train_data[0::,0])
 gbcResults = gb.predict(test_data[0::,1::])
 
 
