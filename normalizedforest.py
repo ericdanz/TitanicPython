@@ -195,26 +195,25 @@ test_data = fixdataSVM(test_data)
 train_test = scaleData(train_data, test_data)
 train_data = train_test[0]
 test_data = train_test[1]
-bestforest = [[],0.0]
+bestforest = [RandomForestClassifier(n_estimators=10001),0.0]
 
 #do a quick forest, iterate five times to get some idea of the range
 for i in range(5):
 	forest = RandomForestClassifier(n_estimators=10001)
 	forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
-	forest_output = forest.predict(test_data[0::,1::].astype(np.float))
 	#print "the normalized normal forest accuracy:"
 	accuracy = compare (forest.predict(train_data[0::,1::]).astype(np.float),train_data[0::,0].astype(np.float))
 	if accuracy > bestforest[1]:
-		bestforest[0] = forest_output
+		bestforest[0] = forest
 	#print accuracy
 	
-
+forest_output = bestforest[0].predict(test_data[0::,1::])
 open_file_object = csv.writer(open("normalizedforest.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
 i = 0
 for row in test_file_object:
-	row.insert(0,bestforest[0,i].astype(np.uint8))
+	row.insert(0,forest_output[i].astype(np.uint8))
 	open_file_object.writerow(row)
 	i += 1
 
