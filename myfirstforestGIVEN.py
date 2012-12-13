@@ -1,21 +1,7 @@
-""" Writing my first randomforest code.
-Author : AstroDave
-Date : 23rd September, 2012
-please see packages.python.org/milk/randomforests.html for more
 
-""" 
-
-import csv as csv
 import numpy as np
+import csv as csv
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.grid_search import GridSearchCV
-from collections import Counter
-from pandas import *
-import efunctions as ef
-
 
 csv_file_object = csv.reader(open('train.csv', 'rb')) #Load in the training csv file
 header = csv_file_object.next() #Skip the fist line as it is a header
@@ -23,6 +9,11 @@ train_data=[] #Creat a variable called 'train_data'
 for row in csv_file_object: #Skip through each row in the csv file
     train_data.append(row) #adding each row to the data variable
 train_data = np.array(train_data) #Then convert from a list to an array
+
+#I need to convert row cabin to a single letter (and/or a binary > or < 50?)
+
+
+
 
 #I need to convert all strings to integer classifiers:
 #Male = 1, female = 0:
@@ -44,11 +35,11 @@ train_data[train_data[0::,4] == '',4] = np.median(train_data[train_data[0::,4]\
 train_data[train_data[0::,10] == '',10] = np.round(np.mean(train_data[train_data[0::,10]\
                                                    != '',10].astype(np.float)))
 
-train_data = np.delete(train_data,[2,7,9],1) #remove the name data, cabin and ticket
+train_data = np.delete(train_data,[2,7],1) #remove the name data and ticket
 #I need to do the same with the test data now so that the columns are in the same
 #as the training data
 
-test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the test csv file
+test_file_object = csv.reader(open('../csv/test.csv', 'rb')) #Load in the test csv file
 header = test_file_object.next() #Skip the fist line as it is a header
 test_data=[] #Creat a variable called 'test_data'
 for row in test_file_object: #Skip through each row in the csv file
@@ -77,7 +68,7 @@ for i in xrange(np.size(test_data[0::,0])):
                                              (test_data[0::,0] == test_data[i,0])\
             ,7].astype(np.float))
 
-test_data = np.delete(test_data,[1,6,8],1) #remove the name data, cabin and ticket
+test_data = np.delete(test_data,[1,6],1) #remove the name data, cabin and ticket
 
 #The data is now ready to go. So lets train then test!
 
@@ -90,47 +81,14 @@ forest = forest.fit(train_data[0::,1::],\
 print 'Predicting'
 output = forest.predict(test_data)
 
-
-#Cross-Validate the RF
-cvScore = []
-savedForests = []
-cv = StratifiedKFold(train_data[0::,0], 15)
-for train,test in cv:
-	cvForest = RandomForestClassifier(n_estimators=401).fit(train_data[train,1::].astype(np.float),train_data[train,0].astype(np.float))
-	savedForests.append(cvForest)
-	thisOutput = cvForest.predict(train_data[test,1::].astype(np.float))
-	cvScore.append(ef.compare(thisOutput.astype(np.float),train_data[test,0].astype(np.float)))
-
-print "CV Scores:"
-for score in cvScore:
-	print score
-
-print "Against the whole training set accuracy:"
-sfOutput = []
-for s in savedForests:
-	thisOutput = s.predict(train_data[0::,1::].astype(np.float))
-	print ef.compare(thisOutput.astype(np.float),train_data[0::,0].astype(np.float))
-	sfOutput.append(thisOutput)
-	
-averageOutput = []
-sfOutput = np.array(sfOutput)
-averageOutput =  np.mean(sfOutput[0::].astype(np.int), axis=0)
-averageOutput = averageOutput.astype(np.int)
-
-print "Averaged accuracy:"
-print ef.compare(averageOutput.astype(np.float),train_data[0::,0].astype(np.float))
-
-print "their forest accuracy:"
-print ef.compare (forest.predict(train_data[0::,1::]).astype(np.float),train_data[0::,0].astype(np.float))
-
-#open_file_object = csv.writer(open("../csv/myfirstforest.csv", "wb"))
-#test_file_object = csv.reader(open('../csv/test.csv', 'rb')) #Load in the csv file
+open_file_object = csv.writer(open("myfirstforest.csv", "wb"))
+test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 
 
-#test_file_object.next()
-#i = 0
-#for row in test_file_object:
-#    row.insert(0,output[i].astype(np.uint8))
-#    open_file_object.writerow(row)
-#    i += 1
+test_file_object.next()
+i = 0
+for row in test_file_object:
+    row.insert(0,output[i].astype(np.uint8))
+    open_file_object.writerow(row)
+    i += 1
  
