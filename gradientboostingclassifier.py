@@ -54,8 +54,8 @@ test_data = train_test[1]
 #    i += 1
 
 #GBC
-nEst = 1001
-lR = .3
+nEst = 10001
+lR = .1
 
 gb = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst)
 gb.fit(train_data[0::,1::],train_data[0::,0])
@@ -100,7 +100,7 @@ print ef.compare (gb.predict(train_data[0::,1::]).astype(np.float),train_data[0:
 
 
 #record the GBC results 
-'''
+
 open_file_object = csv.writer(open("gbc.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
@@ -110,7 +110,7 @@ for row in test_file_object:
 	row.insert(0,gbcResults[i].astype(np.uint8))
 	open_file_object.writerow(row)
 	i += 1
-'''
+
 
 
 
