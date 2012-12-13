@@ -55,9 +55,12 @@ test_data = train_test[1]
 
 #GBC
 nEst = 10001
-lR = .1
+lR = 0.1
+subSam = 1.0
 
-gb = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst)
+
+
+gb = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,  subsample = subSam)
 gb.fit(train_data[0::,1::],train_data[0::,0])
 gbcResults = gb.predict(test_data[0::,1::])
 
@@ -67,7 +70,7 @@ cvScore = []
 savedGBC = []
 cv = StratifiedKFold(train_data[0::,0], 15)
 for train,test in cv:
-	cvGBC = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst).fit(train_data[train,1::].astype(np.float),train_data[train,0].astype(np.float))
+	cvGBC = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,subsample = subSam).fit(train_data[train,1::].astype(np.float),train_data[train,0].astype(np.float))
 	savedGBC.append(cvGBC)
 	thisOutput = cvGBC.predict(train_data[test,1::].astype(np.float))
 	cvScore.append(ef.compare(thisOutput.astype(np.float),train_data[test,0].astype(np.float)))
@@ -85,10 +88,14 @@ for s in savedGBC:
 	
 averageOutput = []
 sfOutput = np.array(sfOutput)
-averageOutput =  np.mean(sfOutput[0::].astype(np.int), axis=0)
-averageOutput = averageOutput.astype(np.int)
+averageOutput =  np.mean(sfOutput[0::].astype(np.float), axis=0)
+for x in xrange(np.size(averageOutput)):
+	if averageOutput[x] > .6:
+		averageOutput[x] = 1
+	else:
+		averageOutput[x] = 0
 
-print "Averaged accuracy:"
+print "Averaged accuracy with threshold .6:"
 print ef.compare(averageOutput.astype(np.float),train_data[0::,0].astype(np.float))
 
 print "single GBC accuracy:"
@@ -100,7 +107,7 @@ print ef.compare (gb.predict(train_data[0::,1::]).astype(np.float),train_data[0:
 
 
 #record the GBC results 
-
+'''
 open_file_object = csv.writer(open("gbc.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
@@ -110,7 +117,7 @@ for row in test_file_object:
 	row.insert(0,gbcResults[i].astype(np.uint8))
 	open_file_object.writerow(row)
 	i += 1
-
+'''
 
 
 

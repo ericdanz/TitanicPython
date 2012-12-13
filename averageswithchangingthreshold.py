@@ -59,14 +59,14 @@ for i in xrange(np.size(gdata[0::,0])):
 	tempavg[4] = ndata[i,0].astype(float)
 	#print tempavg
 	print np.mean(tempavg)
-	if np.mean(tempavg) > .4:
+	if np.mean(tempavg) > .6:
 		avgdata.append(1.0)
 	else:
 		avgdata.append(0.0)
 	#avgdata.append((np.mean(tempavg)))
 	
 
-open_file_object = csv.writer(open("avgforest4threshold.csv", "wb"))
+open_file_object = csv.writer(open("avgforest6threshold.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb'))
 
 test_file_object.next()
