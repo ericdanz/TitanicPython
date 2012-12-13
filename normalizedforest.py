@@ -9,6 +9,13 @@ from sklearn.grid_search import GridSearchCV
 from collections import Counter
 from pandas import *
 
+def compare (predicted,actual):
+	score = float(0)
+	for i in xrange(np.size(predicted)):
+		if predicted[i] == actual[i]:
+			score += 1
+	score = score / np.size(predicted)
+	return score
 
 def cabin_letter(x):
 	return{
@@ -53,16 +60,37 @@ def fixdataSVM (data):
 	data[data[0::,10] == '',10] = 3
 	#find the most common embark point, put it in the blanks
 	data[data[0::,10] == 3,10] = max(Counter(data[data[0::,10] != 3,10]))
-	#take means for age for each class
+	
+	#take means for age for each class and gender
 
-	age = []
+	firstClassMAge = []
+	secondClassMAge = []
+	thirdClassMAge = []
+	
+	firstClassFAge = []
+	secondClassFAge = []
+	thirdClassFAge = []
+	
 	firstclassfare = []
 	secondclassfare = []
 	thirdclassfare = []
 	
+	
 	for x in data:
-		if x[4]:
-			age.append(np.float(x[4]))
+		if x[4] and x[1] == '1' and x[3] == '1':
+			firstClassMAge.append(np.float(x[4]))
+		if x[4] and x[1] == '2' and x[3] == '1':
+			secondClassMAge.append(np.float(x[4]))	
+		if x[1] == '3' and x[4] and x[3] == '1':
+			thirdClassMAge.append(np.float(x[4]))	
+			
+		if x[1] == '1' and x[4] and x[3] == '0':
+			firstClassFAge.append(np.float(x[4]))
+		if x[1] == '2' and x[4] and x[3] == '0':
+			secondClassFAge.append(np.float(x[4]))	
+		if x[1] == '3' and x[4] and x[3] == '0':
+			thirdClassFAge.append(np.float(x[4]))	
+			
 		if x[1] == '1' and x[8]:
 			firstclassfare.append(np.float(x[8]))
 		if x[1] == '2' and x[8]:
@@ -70,7 +98,14 @@ def fixdataSVM (data):
 		if x[1] == '3' and x[8]:
 			thirdclassfare.append(np.float(x[8]))
 
-	ageaverage = int(np.median(age))
+			
+	fcmavg = int(np.mean(firstClassMAge))
+	scmavg = int(np.mean(secondClassMAge))
+	tcmavg = int(np.mean(thirdClassMAge))
+	
+	fcfavg = int(np.mean(firstClassFAge))
+	scfavg = int(np.mean(secondClassFAge))
+	tcfavg = int(np.mean(thirdClassFAge))
 	
 	firstclassfareaverage = int(np.mean(firstclassfare))
 	secondclassfareaverage = int(np.mean(secondclassfare))
@@ -82,7 +117,19 @@ def fixdataSVM (data):
 		try:
 			float(data[i,4])
 		except ValueError:
-			data[i,4] = ageaverage
+			if x[1] == '1' and x[3] == '1':
+				data[i,4] = fcmavg
+			elif x[1] == '2' and x[3] == '1':
+				data[i,4] = scmavg
+			elif x[1] == '3' and x[3] == '1':
+				data[i,4] = tcmavg
+			elif x[1] == '1' and x[3] == '0':
+				data[i,4] = fcfavg
+			elif x[1] == '2' and x[3] == '0':
+				data[i,4] = scfavg
+			elif x[1] == '3' and x[3] == '0':
+				data[i,4] = tcfavg
+			
 		try:
 			float(data[i,8])
 		except ValueError:
@@ -93,12 +140,12 @@ def fixdataSVM (data):
 			if data[i,1] == '3':
 				data[i,8] = thirdclassfareaverage
 				
-	#clean up the name and ticket elements
-	data = np.delete(data,[2,7,9],1)
+	#clean up the name and ticket  and cabin elements
+	data = np.delete(data,[2,7],1)
 		
 	#change strings to float
 	for i in xrange(np.size(data[0::,0])):
-		for y in range(8):
+		for y in range(9):
 			try:
 				data[i,y] = num(data[i,y])
 			except ValueError:
@@ -142,26 +189,58 @@ test_data = np.insert(test_data,[0], 0, axis=1)
 #in the future, scale the data by the train set and apply that to test set
 train_data = fixdataSVM(train_data)
 test_data = fixdataSVM(test_data)
+
+
+#scale the data
 train_test = scaleData(train_data, test_data)
 train_data = train_test[0]
 test_data = train_test[1]
-#print train_data[2]
-#print test_data[2]
 
 
 #do a quick forest
-forest = RandomForestClassifier(n_estimators=400)
-forest = forest.fit(train_data[0::,1::],train_data[0::,0])
-forest_output = forest.predict(test_data[0::,1::])
+#forest = RandomForestClassifier(n_estimators=400)
+#forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
+#forest_output = forest.predict(test_data[0::,1::].astype(np.float))
 
-open_file_object = csv.writer(open("normalizedforest.csv", "wb"))
-test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
-test_file_object.next()
-i = 0
-for row in test_file_object:
-    row.insert(0,forest_output[i].astype(np.uint8))
-    open_file_object.writerow(row)
-    i += 1
+
+#Cross-Validate the RF
+cvScore = []
+savedForests = []
+cv = StratifiedKFold(train_data[0::,0], 11)
+for train,test in cv:
+	cvForest = RandomForestClassifier(n_estimators=400).fit(train_data[train,1::].astype(np.float),train_data[train,0].astype(np.float))
+	savedForests.append(cvForest)
+	thisOutput = cvForest.predict(train_data[test,1::].astype(np.float))
+	cvScore.append(compare(thisOutput.astype(np.float),train_data[test,0].astype(np.float)))
+
+print "CV Scores:"
+for score in cvScore:
+	print score
+
+print "Averaged model accuracy:"
+sfOutput = []
+for s in savedForests:
+	thisOutput = s.predict(train_data[0::,1::].astype(np.float))
+	print compare(thisOutput.astype(np.float),train_data[0::,0].astype(np.float))
+	sfOutput.append(thisOutput)
+	
+averageOutput = []
+sfOutput = np.array(sfOutput)
+averageOutput =  np.mean(sfOutput[0::].astype(np.float), axis=0)
+
+averageScore = compare(averageOutput.astype(np.float),train_data[0::,0].astype(np.float))
+#print averageScore
+
+
+
+#open_file_object = csv.writer(open("normalizedforest.csv", "wb"))
+#test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
+#test_file_object.next()
+#i = 0
+#for row in test_file_object:
+#    row.insert(0,forest_output[i].astype(np.uint8))
+#    open_file_object.writerow(row)
+#    i += 1
 
 
 
