@@ -57,11 +57,16 @@ for i in xrange(np.size(gdata[0::,0])):
 	tempavg[2] = rdata[i,0].astype(float)
 	tempavg[3] = gbdata[i,0].astype(float)
 	tempavg[4] = ndata[i,0].astype(float)
-	print tempavg
-	print np.round(np.mean(tempavg))
-	avgdata.append(np.round(np.mean(tempavg)))
+	#print tempavg
+	print np.mean(tempavg)
+	if np.mean(tempavg) > .4:
+		avgdata.append(1.0)
+	else:
+		avgdata.append(0.0)
+	#avgdata.append((np.mean(tempavg)))
 	
-open_file_object = csv.writer(open("avgforest.csv", "wb"))
+
+open_file_object = csv.writer(open("avgforest4threshold.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb'))
 
 test_file_object.next()
@@ -73,12 +78,6 @@ for row in test_file_object:
 	print row
 	print i
 	i += 1
-
-
-
-
-
-
 
 
 
