@@ -60,9 +60,9 @@ for i in xrange(np.size(gdata[0::,0])):
 	#print tempavg
 	print np.mean(tempavg)
 	if np.mean(tempavg) > .6:
-		avgdata.append(1.0)
+		avgdata.append(1)
 	else:
-		avgdata.append(0.0)
+		avgdata.append(0)
 	#avgdata.append((np.mean(tempavg)))
 	
 
@@ -73,9 +73,8 @@ test_file_object.next()
 
 i = 0
 for row in test_file_object:
-	row.insert(0,avgdata[i].astype(np.uint8))
+	row.insert(0,avgdata[i])
 	open_file_object.writerow(row)
-	print row
 	print i
 	i += 1
 

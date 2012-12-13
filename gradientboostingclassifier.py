@@ -54,8 +54,8 @@ test_data = train_test[1]
 #    i += 1
 
 #GBC
-nEst = 10001
-lR = 0.1
+nEst = 601
+lR = 0.3
 subSam = 1.0
 
 
@@ -107,17 +107,17 @@ print ef.compare (gb.predict(train_data[0::,1::]).astype(np.float),train_data[0:
 
 
 #record the GBC results 
-'''
+
 open_file_object = csv.writer(open("gbc.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
 
 i = 0
 for row in test_file_object:
-	row.insert(0,gbcResults[i].astype(np.uint8))
+	row.insert(0,averageOutput[i].astype(np.uint8))
 	open_file_object.writerow(row)
 	i += 1
-'''
+
 
 
 
