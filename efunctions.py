@@ -135,9 +135,11 @@ def fixdataSVM (data):
 			if data[i,1] == '3':
 				data[i,8] = thirdclassfareaverage
 				
+
 	#clean up the name and ticket  and cabin elements
 	data = np.delete(data,[2,7],1)
 		
+
 	#change strings to float
 	for i in xrange(np.size(data[0::,0])):
 		for y in range(9):
@@ -153,14 +155,18 @@ def fixdataSVM (data):
 
 def scaleData (trainer,tester):
 	deparray = trainer[0::,0]
+	mfArray = trainer[0::,2]
 	df = DataFrame(trainer.astype(np.float))
 	df_norm = (df-df.mean())/(df.max()-df.min())
 	trainer = np.array(df_norm)
 	trainer[0::,0] = deparray
+	trainer[0::,2] = mfArray
+	mfArray = tester[0::,2]
 	dfT = DataFrame(tester.astype(np.float))
 	dfT_scaled = (dfT-df.mean())/(df.max()-df.min())
 	tester = np.array(dfT_scaled)
 	tester[0::,0] = 0
+	tester[0::,2] = mfArray
 	bothArray = [trainer,tester]
 	return bothArray
 	
