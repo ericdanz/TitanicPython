@@ -54,7 +54,7 @@ test_data = train_test[1]
 #    i += 1
 
 #GBC
-nEst = 601
+nEst = 201
 lR = 0.3
 subSam = 1.0
 
