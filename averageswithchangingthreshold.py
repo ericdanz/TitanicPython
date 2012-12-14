@@ -46,7 +46,7 @@ fdata = np.array(fdata)
 rdata = np.array(rdata)
 avgsurvived = []
 #tempavg = ['1','2','3','4','5']
-tempavg = ['1','2','3']
+tempavg = ['1','2','3','4']
 print xrange(np.size(fdata[0::,0]))
 print xrange(np.size(gdata[0::,0]))
 
@@ -56,7 +56,7 @@ for i in xrange(np.size(gdata[0::,0])):
 	tempavg[1] = fdata[i,0].astype(float)
 	#tempavg[2] = rdata[i,0].astype(float)
 	tempavg[2] = gbdata[i,0].astype(float)
-	#tempavg[4] = ndata[i,0].astype(float)
+	tempavg[3] = ndata[i,0].astype(float)
 	#print tempavg
 	print np.mean(tempavg)
 	if np.mean(tempavg) > .5:
@@ -66,7 +66,7 @@ for i in xrange(np.size(gdata[0::,0])):
 	#avgdata.append((np.mean(tempavg)))
 	
 
-open_file_object = csv.writer(open("avgfirsttwoandlsgbc.csv", "wb"))
+open_file_object = csv.writer(open("avgfirsttwoandlsgbcandNF5.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb'))
 
 test_file_object.next()

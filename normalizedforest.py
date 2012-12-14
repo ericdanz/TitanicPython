@@ -54,25 +54,25 @@ cv = KFold(len(train_data), k=5, indices=False)
 
 #do a quick forest, iterate five times to get some idea of the range
 for i in range(5):
-	forest = RandomForestClassifier(n_estimators=1001)
+	forest = RandomForestClassifier(n_estimators=101)
 	forest = forest.fit(male_train[0::,1::].astype(np.float),male_train[0::,0].astype(np.float))
-	print "the normalized normal forest accuracy:"
+	print "the normalized male forest accuracy:"
 	accuracy = ef.compare (forest.predict(male_train[0::,1::]).astype(np.float),male_train[0::,0].astype(np.float))
 	#if accuracy > bestforest[1]:
 	#	bestforest[0] = forest
 	print accuracy
 
 for i in range(5):
-	forest = RandomForestClassifier(n_estimators=1001)
+	forest = RandomForestClassifier(n_estimators=101)
 	forest = forest.fit(female_train[0::,1::].astype(np.float),female_train[0::,0].astype(np.float))
-	print "the normalized normal forest accuracy:"
+	print "the normalized fem forest accuracy:"
 	accuracy = ef.compare (forest.predict(female_train[0::,1::]).astype(np.float),female_train[0::,0].astype(np.float))
 	#if accuracy > bestforest[1]:
 	#	bestforest[0] = forest
 	print accuracy
 
 for i in range(5):
-	forest = RandomForestClassifier(n_estimators=1001)
+	forest = RandomForestClassifier(n_estimators=101)
 	forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
 	print "the normalized normal forest accuracy:"
 	accuracy = ef.compare (forest.predict(train_data[0::,1::]).astype(np.float),train_data[0::,0].astype(np.float))
@@ -85,31 +85,31 @@ forestResults = []
 for traincv in cv:
 	forest = RandomForestClassifier(n_estimators=1001)
 	forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
-	forestResults.append(forest.predict(train_data[0::,1::].astype(np.float)))
+	forestResults.append(forest.predict(test_data[0::,1::].astype(np.float)))
 
 forestResults = np.array(forestResults)
 averagedResults =  np.mean(forestResults.astype(np.float), axis=0)
 #print averagedResults
 for i in xrange(np.size(averagedResults)):
-	if averagedResults[i] > .6:
+	if averagedResults[i] > .4:
 		averagedResults[i] = 1
 	else:
 		averagedResults[i] = 0
-print ef.compare(averagedResults.astype(np.float),train_data[0::,0].astype(np.float))
 
-'''	
 
-forest_output = bestforest[0].predict(test_data[0::,1::])
+	
+
+#forest_output = bestforest[0].predict(test_data[0::,1::])
 open_file_object = csv.writer(open("normalizedforest.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
 i = 0
 for row in test_file_object:
-	row.insert(0,forest_output[i].astype(np.uint8))
+	row.insert(0,averagedResults[i].astype(np.uint8))
 	open_file_object.writerow(row)
 	i += 1
 
-'''
+
 
 
 

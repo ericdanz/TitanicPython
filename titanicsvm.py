@@ -148,7 +148,7 @@ test_data = train_test[1]
 #print train_data[2]
 #print test_data[2]
 
-
+'''
 #do a quick forest
 forest = RandomForestClassifier(n_estimators=100)
 forest = forest.fit(train_data[0::,1::],train_data[0::,0])
@@ -162,23 +162,21 @@ for row in test_file_object:
     row.insert(0,forest_output[i].astype(np.uint8))
     open_file_object.writerow(row)
     i += 1
-
+'''
 
 #do a grid search for c,y on the data, possibly a second better-region-only search
 #do a bigger fold, maybe 10 instead of 3
-C_range = 2.0 ** np.arange(-13,30)
-gamma_range = 2.0 ** np.arange(-17,14)
+C_range = 2.0 ** np.arange(-7,18)
+gamma_range = 2.0 ** np.arange(-7,8)
 param_grid = dict(gamma=gamma_range, C=C_range)
 cv = StratifiedKFold(train_data[0::,0], 10)
-grid = GridSearchCV(SVC(kernel='rbf',cache_size=2000), param_grid = param_grid, cv = cv, n_jobs=20, verbose=2)
+grid = GridSearchCV(SVC(kernel='rbf',cache_size=2000), param_grid = param_grid, cv = cv, n_jobs=2, verbose=2)
 grid.fit(train_data[0::,1::],train_data[0::,0])
 thebest = ["The best classifier is: ", grid.best_estimator_]
 
 
 open_file_object = csv.writer(open("thebest.txt", "wb"))
 open_file_object.writerow(thebest)
-open_file_object.writerow(train_data[5])
-open_file_object.writerow(test_data[15])
 
 #run an RBF kernel on the data
 myRBF = grid.best_estimator_
