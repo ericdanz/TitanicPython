@@ -91,7 +91,7 @@ averageOutput = []
 sfOutput = np.array(sfOutput)
 averageOutput =  np.mean(sfOutput[0::].astype(np.float), axis=0)
 for x in xrange(np.size(averageOutput)):
-	if averageOutput[x] > .6:
+	if averageOutput[x] > .5:
 		averageOutput[x] = 1
 	else:
 		averageOutput[x] = 0
@@ -128,7 +128,7 @@ sMG = np.array(sMG)
 
 male_average = np.mean(sMG, axis=0)
 for i in xrange(np.size(male_average)):
-	if male_average[i] > .4:
+	if male_average[i] > .49:
 		male_average[i] = 1
 	else:
 		male_average[i] = 0
@@ -146,7 +146,7 @@ sFG = np.array(sFG)
 
 female_average = np.mean(sFG, axis=0)
 for i in xrange(np.size(female_average)):
-	if female_average[i] > .4:
+	if female_average[i] > .49:
 		female_average[i] = 1
 	else:
 		female_average[i] = 0
@@ -229,7 +229,7 @@ print ef.compare(female_output.astype(np.float),female_train[0::,0].astype(np.fl
 
 #record the GBC results based on male/female
 
-open_file_object = csv.writer(open("loosersexbasedgbc.csv", "wb"))
+open_file_object = csv.writer(open("sexbasedgbcthreshold49.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
 
