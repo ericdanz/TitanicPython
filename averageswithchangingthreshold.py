@@ -9,7 +9,7 @@ csv_file_objectg = csv.reader(open('genderclassmodel2.csv', 'rb')) #Load in the 
 csv_file_objectf = csv.reader(open('myfirstforest2.csv', 'rb')) #Load in the csv file
 csv_file_objectr = csv.reader(open('rbf.csv', 'rb')) #Load in the csv file
 csv_file_objectn = csv.reader(open('normalizedforest.csv', 'rb')) #Load in the csv file
-csv_file_objectgb = csv.reader(open('loosersexbasedgbc.csv', 'rb')) #Load in the csv file
+csv_file_objectgb = csv.reader(open('sexbasedgbcthreshold49.csv', 'rb')) #Load in the csv file
 
 
 
@@ -45,8 +45,8 @@ gbdata = np.array(gbdata)
 fdata = np.array(fdata)
 rdata = np.array(rdata)
 avgsurvived = []
-#tempavg = ['1','2','3','4','5']
-tempavg = ['1','2','3','4']
+tempavg = ['1','2','3','4','5']
+#tempavg = ['1','2','3','4']
 print xrange(np.size(fdata[0::,0]))
 print xrange(np.size(gdata[0::,0]))
 

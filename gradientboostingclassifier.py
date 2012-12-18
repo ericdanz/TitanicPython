@@ -55,8 +55,8 @@ test_data = train_test[1]
 #    i += 1
 
 #GBC
-nEst = 601
-lR = 0.2
+nEst = 41
+lR = 0.05
 subSam = 1.0
 
 
@@ -64,6 +64,19 @@ subSam = 1.0
 gb = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,  subsample = subSam)
 gb.fit(train_data[0::,1::],train_data[0::,0])
 gbcResults = gb.predict(test_data[0::,1::])
+
+#record the GBC results based on male/female
+
+open_file_object = csv.writer(open("gbc.csv", "wb"))
+test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
+test_file_object.next()
+
+i = 0
+for row in test_file_object:
+	row.insert(0,gbcResults[i].astype(np.uint8))
+	open_file_object.writerow(row)
+	i += 1
+
 
 
 #Cross-Validate the RF
