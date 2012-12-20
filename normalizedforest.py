@@ -40,9 +40,12 @@ test_data = ef.fixdataSVM(test_data)
 train_test = ef.scaleData(train_data, test_data)
 train_data = train_test[0]
 test_data = train_test[1]
-bestforest = [RandomForestClassifier(n_estimators=1001),0.0]
+forestResults = []
+forest = RandomForestClassifier(n_estimators=51)
+forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
+forestResults = forest.predict(test_data[0::,1::].astype(np.float))
 
-
+'''
 #split into male and female
 male_train = train_data[train_data[0::,2] == 1, 0::]
 female_train = train_data[train_data[0::,2] == 0, 0::]
@@ -83,7 +86,7 @@ for i in range(5):
 #get a list of forests
 forestResults = []
 for traincv in cv:
-	forest = RandomForestClassifier(n_estimators=1001)
+	forest = RandomForestClassifier(n_estimators=101)
 	forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
 	forestResults.append(forest.predict(test_data[0::,1::].astype(np.float)))
 
@@ -98,14 +101,14 @@ for i in xrange(np.size(averagedResults)):
 
 
 	
-
+'''
 #forest_output = bestforest[0].predict(test_data[0::,1::])
 open_file_object = csv.writer(open("normalizedforest.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
 i = 0
 for row in test_file_object:
-	row.insert(0,averagedResults[i].astype(np.uint8))
+	row.insert(0,forestResults[i].astype(np.uint8))
 	open_file_object.writerow(row)
 	i += 1
 
