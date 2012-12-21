@@ -55,7 +55,7 @@ test_data = train_test[1]
 #    i += 1
 
 #GBC
-nEst = 21
+nEst = 41
 lR = 0.05
 subSam = 1.0
 
@@ -77,7 +77,7 @@ for row in test_file_object:
 	open_file_object.writerow(row)
 	i += 1
 
-
+'''
 
 #Cross-Validate the RF
 cvScore = []
@@ -114,7 +114,7 @@ print ef.compare(averageOutput.astype(np.float),train_data[0::,0].astype(np.floa
 
 print "single GBC accuracy:"
 print ef.compare (gb.predict(train_data[0::,1::]).astype(np.float),train_data[0::,0].astype(np.float))
-
+'''
 #male and female split
 male_train = train_data[train_data[0::,2] == 1,0::]
 female_train = train_data[train_data[0::,2] == 0,0::]
@@ -122,7 +122,7 @@ female_train = train_data[train_data[0::,2] == 0,0::]
 #split the test data
 male_test = test_data[test_data[0::,2] == 1,0::]
 female_test = test_data[test_data[0::,2] == 0,0::]
-
+'''
 
 #cv it
 mcv = KFold(len(male_train[0::,0]), 15)
@@ -130,7 +130,11 @@ fcv = KFold(len(female_train[0::,0]), 15)
 
 sMG = []
 sFG = []
+'''
+mGBC = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,subsample = subSam).fit(male_train[0::,1::].astype(np.float),male_train[0::,0].astype(np.float))
+male_output = mGBC.predict(male_test[0::,1::])
 
+'''
 for train,test in mcv:
 	mGBC = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,subsample = subSam).fit(male_train[train,1::].astype(np.float),male_train[train,0].astype(np.float))
 	male_output = mGBC.predict(male_test[0::,1::])
@@ -146,9 +150,12 @@ for i in xrange(np.size(male_average)):
 	else:
 		male_average[i] = 0
 
+'''
 
+fGBC = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,subsample = subSam).fit(female_train[0::,1::].astype(np.float),female_train[0::,0].astype(np.float))
+female_output = fGBC.predict(female_test[0::,1::])
 
-
+'''
 for train,test in fcv:
 	fGBC = GradientBoostingClassifier(learn_rate = lR, n_estimators = nEst,subsample = subSam).fit(female_train[train,1::].astype(np.float),female_train[train,0].astype(np.float))
 	female_output = fGBC.predict(female_test[0::,1::])
@@ -164,6 +171,7 @@ for i in xrange(np.size(female_average)):
 	else:
 		female_average[i] = 0
 
+'''
 
 '''
 print 'MALE AVERAGE'
@@ -214,8 +222,8 @@ for i in xrange(np.size(female_average)):
 		female_average[i] = 0
 
 '''
-test_data[test_data[0::,2] == 1,0] = male_average
-test_data[test_data[0::,2] == 0,0] = female_average
+test_data[test_data[0::,2] == 1,0] = male_output
+test_data[test_data[0::,2] == 0,0] = female_output
 
 
 '''
@@ -242,7 +250,7 @@ print ef.compare(female_output.astype(np.float),female_train[0::,0].astype(np.fl
 
 #record the GBC results based on male/female
 
-open_file_object = csv.writer(open("sexbasedgbcthreshold49.csv", "wb"))
+open_file_object = csv.writer(open("sexbasedgbc.csv", "wb"))
 test_file_object = csv.reader(open('test.csv', 'rb')) #Load in the csv file
 test_file_object.next()
 

@@ -41,10 +41,11 @@ train_test = ef.scaleData(train_data, test_data)
 train_data = train_test[0]
 test_data = train_test[1]
 forestResults = []
-forest = RandomForestClassifier(n_estimators=51)
+forest = RandomForestClassifier(n_estimators=81)
 forest = forest.fit(train_data[0::,1::].astype(np.float),train_data[0::,0].astype(np.float))
 forestResults = forest.predict(test_data[0::,1::].astype(np.float))
-
+print 'NF results on training data: '
+print ef.compare (forest.predict(train_data[0::,1::]).astype(np.float),train_data[0::,0].astype(np.float))
 '''
 #split into male and female
 male_train = train_data[train_data[0::,2] == 1, 0::]
